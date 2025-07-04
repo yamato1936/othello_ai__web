@@ -1,8 +1,4 @@
-import copy
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import numpy as np
+import numpy as np 
 
 EMPTY, BLACK, WHITE = 0, 1, -1
 BOARD_SIZE = 8
@@ -84,25 +80,3 @@ class OthelloGame:
             return WHITE
         else:
             return 0
-
-class SimpleOthelloCNN(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.conv1 = nn.Conv2d(2, 32, 3, padding=1)
-        self.conv2 = nn.Conv2d(32, 64, 3, padding=1)
-        self.fc1 = nn.Linear(64*8*8, 128)
-        self.fc2 = nn.Linear(128, 1)
-
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        x = F.relu(self.conv2(x))
-        x = x.view(-1, 64*8*8)
-        x = F.relu(self.fc1(x))
-        x = self.fc2(x)
-        return x.squeeze(1)
-
-def board_to_tensor(board, color):
-    own = np.array([[1 if cell == color else 0 for cell in row] for row in board])
-    opp = np.array([[1 if cell == -color else 0 for cell in row] for row in board])
-    state = np.stack([own, opp])
-    return torch.tensor(state, dtype=torch.float32).unsqueeze(0)
