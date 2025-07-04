@@ -1,0 +1,117 @@
+body {
+    background-color: #f0f0f0;
+    font-family: sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#info {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(8, min(8vw, 60px));
+    grid-template-rows: repeat(8, min(8vw, 60px));
+    gap: 2px;
+    margin: 10px 0;
+    position: relative;
+    border: 2px solid #333;
+    background-color: #333;
+}
+
+.cell {
+    width: 100%;
+    height: 100%;
+    background-color: #a8d5a8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.stone {
+    width: 85%;
+    height: 85%;
+    border-radius: 50%;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+}
+
+.black {
+    background-color: black;
+}
+
+.white {
+    background-color: white;
+}
+
+.legal-move-indicator {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    width: 70%;
+    height: 70%;
+    border: 1px dashed #333;
+}
+
+#message {
+    font-weight: bold;
+    margin-top: 10px;
+    font-size: 20px;
+    color: #333;
+    min-height: 24px;
+}
+
+.reset-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+
+#thinking-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1.5rem;
+    z-index: 10;
+    display: none; /* 最初は非表示 */
+}
+
+.spinner {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #3498db;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

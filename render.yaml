@@ -1,0 +1,36 @@
+services:
+  # サービス①: Redis (連絡掲示板)
+  - name: othello-redis
+    type: redis
+    plan: free # 無料プラン
+
+  # サービス②: Webサーバー (Flaskアプリ)
+  - name: othello-web
+    type: web
+    plan: free # 無料プラン
+    env: docker # Dockerfileを使ってビルド
+    # Redisの接続情報を環境変数として自動で設定
+    envVars:
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: othello-redis
+          property: internalUrl
+      # Flaskの秘密鍵も自動で生成
+      - key: SECRET_KEY
+        generateValue: true
+
+  # サービス③: Celeryワーカー (AI思考の作業員)
+  - name: othello-worker
+    type: worker
+    plan: free # 無料プラン
+    env: docker # Webサーバーと同じDockerfileを再利用
+    # 起動コマンドをCeleryワーカー用に上書き
+    startCommand: celery -A tasks.celery worker --loglevel=info
+    # こちらもRedisの接続情報が必要
+    envVars:
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: othello-redis
+          property: internalUrl

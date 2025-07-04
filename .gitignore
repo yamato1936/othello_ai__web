@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Environments
+othello/
+venv/
+env/
+
+# Database files
+app.db
+
+# IDE / Editor specific
+.vscode/

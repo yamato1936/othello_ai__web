@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Othello AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="game-container">
+        <h1>オセロWebアプリ</h1>
+        <div id="info">
+            ● 黒 (あなた): <span id="black-count">0</span>
+            ○ 白 (AI): <span id="white-count">0</span>
+        </div>
+        <div id="board">
+            <!-- AI思考中のオーバーレイ -->
+            <div id="thinking-overlay">
+                <div class="spinner"></div>
+                AI is thinking...
+            </div>
+        </div>
+        <div id="message"></div>
+        <button id="reset-button" class="reset-button">リセット</button>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
