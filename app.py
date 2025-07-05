@@ -84,6 +84,13 @@ def get_ai_result(task_id):
         game = get_game_from_session()
         game.make_move(move[0], move[1], game.current_player)
         game.current_player *= -1
+        # プレイヤーがパスしなければならないかチェック
+        if not game.is_game_over() and not game.get_valid_moves(game.current_player):
+            # パスの場合、再度ターンをAIに戻す
+            game.current_player *= -1
+            save_game_to_session(game)
+            # フロントエンドに「プレイヤーがパスした」ことを伝える
+            return jsonify({"state": task.state, "player_must_pass": True})
         save_game_to_session(game)
         return jsonify({"state": task.state})
     else:

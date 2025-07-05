@@ -136,8 +136,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (data.state === 'SUCCESS') {
                     clearInterval(intervalId);
-                    hideOverlay();
-                    await fetchBoard();
+                    if (data.player_must_pass) {
+                    // プレイヤーがパスした場合
+                        alert("あなたはパスしました。続けてAIの番です。");
+                    // 盤面を更新し、即座に次のAIの思考を開始
+                        await fetchBoard();
+                        setTimeout(startAiTask, 100);
+                    } else {
+                    // 通常通り、UIのロックを解除して盤面を更新
+                        hideOverlay();
+                        await fetchBoard();
+                }
                 } else if (data.state === 'FAILURE') {
                     clearInterval(intervalId);
                     alert("AIの思考中にエラーが発生しました。");

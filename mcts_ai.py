@@ -2,7 +2,8 @@ import math
 import random
 import copy
 from othello_ai import OthelloGame
-from teacher_ai import AlphaBetaAI # CNNの代わりに、軽量な評価関数を持つAIをインポート
+# ▼▼▼ 新しい動的評価AIをインポート ▼▼▼
+from teacher_ai import PhaseAwareAI
 
 # UCTスコアの計算で使う探索のバランスを調整する定数
 C_PARAM = 1.414 
@@ -41,15 +42,13 @@ class MCTSNode:
         self.wins += result
 
 class MCTS_AI:
-    """評価関数ベースの高速MCTS AI"""
-    def __init__(self, iterations=100, simulation_depth=10):
+    """MCTSと動的評価関数を組み合わせたAI"""
+    def __init__(self, iterations=100, simulation_depth=5):
         self.iterations = iterations
         self.simulation_depth = simulation_depth
         
-        # --- ▼▼▼ AIの脳をteacher_aiに置き換え ▼▼▼ ---
-        # シミュレーションの評価役として、静的評価関数を持つAIを利用
-        self.evaluator = AlphaBetaAI(color=1) 
-        # --- ▲▲▲ AIの脳をteacher_aiに置き換え ▲▲▲ ---
+        # ▼▼▼ AIの評価役を、新しいPhaseAwareAIに設定 ▼▼▼
+        self.evaluator = PhaseAwareAI(color=1) 
 
     def get_move(self, game):
         if not game.get_valid_moves(game.current_player):
@@ -85,10 +84,10 @@ class MCTS_AI:
                 state.current_player *= -1
             
             # 4. 更新 (Backpropagation)
-            # --- ▼▼▼ 評価方法をteacher_aiの評価関数に変更 ▼▼▼ ---
-            eval_score = self.evaluator.evaluate(state.board, root.game_state.current_player)
-            result = math.tanh(eval_score / 100.0) # スコアを-1から1の範囲に正規化
-            # --- ▲▲▲ 評価方法をteacher_aiの評価関数に変更 ▲▲▲ ---
+            # ▼▼▼ 評価方法を新しいAIの評価関数に変更 ▼▼▼
+            eval_score = self.evaluator.evaluate(state)
+            # スコアのスケールが大きいので、正規化の分母を調整
+            result = math.tanh(eval_score / 1000.0)
 
             while node is not None:
                 result_for_node = result if node.game_state.current_player == root.game_state.current_player else -result
