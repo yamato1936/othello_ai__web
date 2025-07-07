@@ -1,14 +1,11 @@
 services:
-  # サービス①: Redis (連絡掲示板)
   - name: othello-redis
     type: redis
     plan: free
-    # ▼▼▼ 修正点①: IP許可リストを追加 ▼▼▼
     ipAllowList:
       - source: 0.0.0.0/0
         description: Allow all internal traffic
 
-  # サービス②: Webサーバー (Flaskアプリ)
   - name: othello-web
     type: web
     plan: free
@@ -18,25 +15,20 @@ services:
         fromService:
           type: redis
           name: othello-redis
-          # ▼▼▼ 修正点②: internalUrl -> connectionString ▼▼▼
           property: connectionString
       - key: SECRET_KEY
         generateValue: true
 
-  # サービス③: Celeryワーカー (AI思考の作業員)
   - name: othello-worker
     type: worker
     plan: free
     env: docker
-    # ▼▼▼ 修正点③: startCommandを削除 ▼▼▼
-    # Dockerfile側でコマンドを切り替えるため、ここでは不要
+
     envVars:
       - key: REDIS_URL
         fromService:
           type: redis
           name: othello-redis
-          # ▼▼▼ 修正点②: internalUrl -> connectionString ▼▼▼
           property: connectionString
-      # ▼▼▼ 修正点③の対応: このサービスがワーカーであることを示す環境変数を追加 ▼▼▼
       - key: SERVICE_TYPE
         value: worker
