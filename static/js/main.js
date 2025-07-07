@@ -57,11 +57,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function updateMessage(black, white) {
         if (gameOver) {
-            if (black > white) messageEl.textContent = "あなたの勝ちです！";
-            else if (white > black) messageEl.textContent = "あなたの負けです。";
-            else messageEl.textContent = "引き分けです。";
+            if (black > white) messageEl.textContent = "You Win!";
+            else if (white > black) messageEl.textContent = "You Lose.";
+            else messageEl.textContent = "Draw!";
         } else {
-            messageEl.textContent = currentPlayer === 1 ? "あなたの番です" : "AIの番です";
+            messageEl.textContent = currentPlayer === 1 ? "Your Turn" : "AI's Turn";
         }
     }
 
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const data = await res.json();
             if (!data.success) {
-                alert("その手は打てません。");
+                alert("Invalid move.");
                 return;
             }
             await fetchBoard(); // 自分の手を反映
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch("/start_ai_move", { method: "POST" });
             const data = await res.json();
             if (data.pass) {
-                alert("AIはパスしました。あなたの番です。");
+                alert("AI passed. It's your turn.");
                 hideOverlay();
                 await fetchBoard();
                 return;
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     clearInterval(intervalId);
                     if (data.player_must_pass) {
                     // プレイヤーがパスした場合
-                        alert("あなたはパスしました。続けてAIの番です。");
+                        alert("No moves available. Passing turn.");
                     // 盤面を更新し、即座に次のAIの思考を開始
                         await fetchBoard();
                         setTimeout(startAiTask, 100);
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 } else if (data.state === 'FAILURE') {
                     clearInterval(intervalId);
-                    alert("AIの思考中にエラーが発生しました。");
+                    alert("An error occurred during the AI's turn.");
                     hideOverlay();
                 }
             } catch (error) {
