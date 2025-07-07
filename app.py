@@ -3,14 +3,14 @@ import json
 import os
 
 from othello_ai import OthelloGame
-from tasks import calculate_ai_move # Celeryタスクをインポート
+from tasks import calculate_ai_move
 
-# --- Flaskアプリケーションの初期化 ---
+# Flaskアプリケーションの初期化
 app = Flask(__name__, template_folder='templates', static_folder='static')
 # セッションを暗号化するための秘密鍵
 app.secret_key = os.environ.get('SECRET_KEY', 'a-very-secret-key-for-local-dev')
 
-# --- ヘルパー関数 ---
+
 def get_game_from_session():
     """セッションからゲーム状態を復元、なければ新規作成"""
     game = OthelloGame()
@@ -26,12 +26,12 @@ def save_game_to_session(game):
     session['board'] = json.dumps(game.board)
     session['current_player'] = game.current_player
 
-# --- ルート定義 ---
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# --- ゲームAPI ---
+
 @app.route('/board', methods=['GET'])
 def get_board_state():
     game = get_game_from_session()
